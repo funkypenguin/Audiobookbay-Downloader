@@ -43,7 +43,10 @@ TRANSMISSION_PASS=your_transmission_password
 TORRENT_CLIENT_TYPE=decypharr
 DECYPHARR_URL=https://decypharr.example.com
 DECYPHARR_API_KEY=your_decypharr_api_key
+DECYPHARR_DEFAULT_CATEGORY=audiobooks
 ```
+
+When Decypharr is selected, the web UI surfaces a "Decypharr Category" field. The value you enter there is sent with each add request; if you leave it blank the server falls back to `DECYPHARR_DEFAULT_CATEGORY`.
 
 ### Optional Configuration
 

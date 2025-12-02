@@ -24,7 +24,7 @@ class TorrentClientInterface(ABC):
         pass
 
     @abstractmethod
-    def add_torrent(self, torrent_url: str, user: User, label: str = None) -> bool:
+    def add_torrent(self, torrent_url: str, user: User, label: str = None, category: str = None) -> bool:
         """Add a torrent from URL/magnet link"""
         pass
 
@@ -209,8 +209,8 @@ class TransmissionClient(TorrentClientInterface):
         filtered_torrents.sort(key=lambda x: (x["status"] != "Stopped", x["added_date"]), reverse=True)
         return filtered_torrents
 
-    def add_torrent(self, torrent_url: str, user: User, label: str = None) -> bool:
-        """Add torrent to Transmission"""
+    def add_torrent(self, torrent_url: str, user: User, label: str = None, category: str = None) -> bool:
+        """Add torrent to Transmission (category unused)"""
         if label is None:
             label = LABEL
 
@@ -396,9 +396,10 @@ class TransmissionClient(TorrentClientInterface):
 class DecypharrClient(TorrentClientInterface):
     """Decypharr torrent client implementation"""
 
-    def __init__(self, url: str = "", api_key: str = ""):
+    def __init__(self, url: str = "", api_key: str = "", default_category: str = ""):
         self.url = url.rstrip('/')
         self.api_key = api_key
+        self.default_category = default_category
         self.session = requests.Session()
         if api_key:
             # Set the API key in headers for authentication
@@ -435,9 +436,11 @@ class DecypharrClient(TorrentClientInterface):
             return []
         return response_data
 
-    def add_content(self, magnet_url: str) -> Dict[str, Any]:
+    def add_content(self, magnet_url: str, category: Optional[str] = None) -> Dict[str, Any]:
         """Add content to Decypharr using /api/add endpoint"""
-        
+
+        chosen_category = (category or self.default_category or "").strip()
+
         # Prepare multipart form data payload matching working sample
         files = {
             "urls": (None, magnet_url),
@@ -446,6 +449,9 @@ class DecypharrClient(TorrentClientInterface):
             "action": (None, "none"),
             "downloadUncached": (None, "true")
         }
+
+        if chosen_category:
+            files["category"] = (None, chosen_category)
 
         response_data = self._make_request('POST', '/api/add', files=files)
         if not response_data:
@@ -509,10 +515,10 @@ class DecypharrClient(TorrentClientInterface):
             return False
         return True
 
-    def add_torrent(self, torrent_url: str, user: User, label: str = None) -> bool:
+    def add_torrent(self, torrent_url: str, user: User, label: str = None, category: str = None) -> bool:
         """Add torrent to Decypharr using the /api/add endpoint"""
-        # Use Decypharr's native add endpoint
-        result = self.add_content(torrent_url)
+        # Use Decypharr's native add endpoint and pass along category when available
+        result = self.add_content(torrent_url, category)
         if result and (result.get("results") or result.get("success")):
             logger.info(f"Successfully added torrent to Decypharr: {torrent_url}")
             return True

@@ -27,7 +27,7 @@ class TorrentService:
             logger.exception(f"Error getting torrents: {e}")
             return []
 
-    def add_torrent(self, torrent_url: str, user: User, label: str = None) -> bool:
+    def add_torrent(self, torrent_url: str, user: User, label: str = None, category: str = None) -> bool:
         """Add torrent from URL/magnet link"""
         try:
             if label is None:
@@ -35,7 +35,7 @@ class TorrentService:
 
             # Convert to magnet if needed
             torrent_url = get_jackett_magnet(torrent_url)
-            return self.client.add_torrent(torrent_url, user, label)
+            return self.client.add_torrent(torrent_url, user, label=label, category=category)
         except Exception as e:
             logger.error(f"Error adding torrent: {e}")
             return False
@@ -124,9 +124,9 @@ def get_torrents(user: User) -> List[Dict[str, Any]]:
     """Get torrents for a user"""
     return get_torrent_service().get_torrents(user)
 
-def add_torrent(torrent_url: str, user: User, label: str = None) -> bool:
+def add_torrent(torrent_url: str, user: User, label: str = None, category: str = None) -> bool:
     """Add torrent from URL/magnet link"""
-    return get_torrent_service().add_torrent(torrent_url, user, label)
+    return get_torrent_service().add_torrent(torrent_url, user, label, category)
 
 def delete_torrent(torrent_id: str, user: User, delete_data: bool = True) -> bool:
     """Delete a torrent"""
