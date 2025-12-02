@@ -444,7 +444,7 @@ class DecypharrClient(TorrentClientInterface):
         # Prepare multipart form data payload matching working sample
         files = {
             "urls": (None, magnet_url),
-            "arr": (None, ""),
+            "arr": (None, chosen_category),
             "downloadFolder": (None, "/mnt"),
             "action": (None, "none"),
             "downloadUncached": (None, "true")
