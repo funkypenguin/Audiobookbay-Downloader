@@ -452,8 +452,10 @@ class DecypharrClient(TorrentClientInterface):
         files = {
             "urls": (None, magnet_url),
             "arr": (None, chosen_category),
-            "action": (None, "symlink"),
-            "downloadUncached": (None, "true")
+                "action": (None, "symlink"),
+                "downloadAction": (None, "symlink"),
+                "rmTrackerUrls": (None, "false"),
+                "skipMultiSeason": (None, "false")
         }
 
         if self.download_folder:
