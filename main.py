@@ -28,6 +28,7 @@ from constants import (
     DECYPHARR_URL,
     DECYPHARR_API_KEY,
     DECYPHARR_DEFAULT_CATEGORY,
+    DECYPHARR_DOWNLOAD_FOLDER,
     TORRENT_CLIENT_TYPE,
     SESSION_KEY,
     TITLE,
@@ -55,7 +56,8 @@ async def lifespan(app: FastAPI):
                 client_type=client_type,
                 url=DECYPHARR_URL,
                 api_key=DECYPHARR_API_KEY,
-                default_category=DECYPHARR_DEFAULT_CATEGORY
+                default_category=DECYPHARR_DEFAULT_CATEGORY,
+                download_folder=DECYPHARR_DOWNLOAD_FOLDER
             )
 
         logger.info(f"Initialized torrent service with {client_type.value} client")

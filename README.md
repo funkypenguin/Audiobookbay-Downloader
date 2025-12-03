@@ -44,9 +44,10 @@ TORRENT_CLIENT_TYPE=decypharr
 DECYPHARR_URL=https://decypharr.example.com
 DECYPHARR_API_KEY=your_decypharr_api_key
 DECYPHARR_DEFAULT_CATEGORY=audiobooks
+DECYPHARR_DOWNLOAD_FOLDER=/mnt
 ```
 
-When Decypharr is selected, the web UI surfaces a "Decypharr Category" field. The value you enter there is sent with each add request; if you leave it blank the server falls back to `DECYPHARR_DEFAULT_CATEGORY`.
+When Decypharr is selected, requests always use `DECYPHARR_DEFAULT_CATEGORY` (if set) and write into `DECYPHARR_DOWNLOAD_FOLDER/<category>` when a folder override is configured; leave it blank to let Decypharr manage paths itself.
 
 ### Optional Configuration
 

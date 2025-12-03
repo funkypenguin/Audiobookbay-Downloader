@@ -396,10 +396,17 @@ class TransmissionClient(TorrentClientInterface):
 class DecypharrClient(TorrentClientInterface):
     """Decypharr torrent client implementation"""
 
-    def __init__(self, url: str = "", api_key: str = "", default_category: str = ""):
+    def __init__(
+        self,
+        url: str = "",
+        api_key: str = "",
+        default_category: str = "",
+        download_folder: str = ""
+    ):
         self.url = url.rstrip('/')
         self.api_key = api_key
         self.default_category = default_category
+        self.download_folder = (download_folder or "").strip()
         self.session = requests.Session()
         if api_key:
             # Set the API key in headers for authentication
@@ -445,10 +452,12 @@ class DecypharrClient(TorrentClientInterface):
         files = {
             "urls": (None, magnet_url),
             "arr": (None, chosen_category),
-            "downloadFolder": (None, "/mnt"),
             "action": (None, "none"),
             "downloadUncached": (None, "true")
         }
+
+        if self.download_folder:
+            files["downloadFolder"] = (None, self.download_folder)
 
         if chosen_category:
             files["category"] = (None, chosen_category)
